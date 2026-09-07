@@ -11,6 +11,9 @@ test('1. Проверка точного соответствия текста',
   //    "This text must match exactly, including punctuation! (100%)"
   // 3. Убедиться что проверка чувствительна к регистру, пробелам и знакам препинания
   // Негативные проверки
+  const exactText = page.locator('#exact-text');
+  await expect(exactText).toHaveText('This text must match exactly, including punctuation! (100%)');
+  await expect(exactText).not.toHaveText('including punctuation!');
 });
 
 test('2. Проверка работы счетчика', async ({ page }) => {
@@ -20,6 +23,16 @@ test('2. Проверка работы счетчика', async ({ page }) => {
   // 3. Проверить что текст стал "1"
   // 4. Нажать кнопку #reset
   // 5. Проверить что текст снова "0"
+
+  const counter = page.locator('#counter');
+  const incrementBtn = page.locator('#increment');
+  const resetBtn = page.locator('#reset');
+
+  await expect(counter).toHaveText('0');
+  await incrementBtn.click();
+  await expect(counter).toHaveText('1');
+  await resetBtn.click();
+  await expect(counter).toHaveText('0');
 });
 
 test('3. Проверка карточки пользователя', async ({ page }) => {
@@ -32,6 +45,19 @@ test('3. Проверка карточки пользователя', async ({ p
   //    - username: "user_active"
   //    - email: "active.user@example.com"
   //    - status: "Active"
+  const username = page.locator('#username');
+  const email = page.locator('#user-email');
+  const status = page.locator('#user-status');
+  const activeUserBtn = page.locator('#activate-user');
+
+  await expect(username).toHaveText('user_guest');
+  await expect(email).toHaveText('guest@example.com');
+  await expect(status).toHaveText('Inactive');
+  await activeUserBtn.click();
+
+  await expect(username).toHaveText('user_active');
+  await expect(email).toHaveText('active.user@example.com');
+  await expect(status).toHaveText('Active');
 });
 
 test('4. Проверка форматированного текста', async ({ page }) => {
@@ -39,6 +65,10 @@ test('4. Проверка форматированного текста', async 
   // 1. Найти элемент #formatted-text
   // 2. Проверить что его текст точно соответствует (включая все пробелы и переносы):
   //    "Text   with   extra   spaces   and\n        line\n        breaks"
+  const formattedText = page.locator('#formatted-text');
+  await expect(formattedText).toHaveText(
+    'Text   with   extra   spaces   and\n        line\n        breaks',
+  );
 });
 
 test('5. Проверка динамического списка', async ({ page }) => {
@@ -50,4 +80,14 @@ test('5. Проверка динамического списка', async ({ pag
   // 4. Проверить что текст теперь: "First item\nSecond item\nItem 3"
   // 5. Нажать #clear-list
   // 6. Проверить что текст стал: "Empty list"
+
+  const itemsList = page.locator('#items-list');
+  const addItemBtn = page.locator('#add-item');
+  const clearListBtn = page.locator('#clear-list');
+
+  await expect(itemsList).toHaveText('First item\nSecond item');
+  await addItemBtn.click();
+  await expect(itemsList).toHaveText('First item\nSecond item\nItem 3');
+  await clearListBtn.click();
+  await expect(itemsList).toHaveText('Empty list');
 });

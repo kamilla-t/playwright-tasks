@@ -12,6 +12,18 @@ test('1. Проверка изменения URL при навигации', asy
   // 4. Проверить что URL изменился и содержит "#contacts"
   // 5. Нажать на ссылку "Главная"
   // 6. Проверить что URL снова содержит "#home"
+
+  const aboutUsBtn = page.getByRole('link', { name: 'О нас' });
+  await aboutUsBtn.click();
+  await expect(page).toHaveURL(/.*#about$/);
+
+  const contactsBtn = page.getByRole('link', { name: 'Контакты' });
+  await contactsBtn.click();
+  await expect(page).toHaveURL(/.*#contacts$/);
+
+  const mainBtn = page.getByRole('link', { name: 'Главная' });
+  await mainBtn.click();
+  await expect(page).toHaveURL(/.*#home$/);
 });
 
 test('2. Проверка URL при программной навигации', async ({ page }) => {
@@ -20,6 +32,12 @@ test('2. Проверка URL при программной навигации',
   // 2. Проверить что URL изменился на "#contacts"
   // 3. Нажать кнопку "Вернуться назад" (back() в истории)
   // 4. Проверить что URL вернулся к "#home"
+
+  await page.locator('#redirect-btn').click();
+  await expect(page).toHaveURL(/.*#contacts$/);
+
+  await page.locator('#back-btn').click();
+  await expect(page).toHaveURL(/.*#home$/);
 });
 
 test('3. Проверка URL после ручного ввода', async ({ page }) => {
@@ -29,4 +47,10 @@ test('3. Проверка URL после ручного ввода', async ({ pa
   // 3. Проверить что URL содержит "#about"
   // 4. Обновить страницу
   // 5. Проверить что URL сохранился с "#about"
+
+  await page.goto('https://osstep.github.io/assertion_tohaveurl#about');
+  await expect(page.getByRole('heading', { name: 'О нас' })).toBeVisible;
+  await expect(page).toHaveURL(/.*#about$/);
+  await page.reload();
+  await expect(page).toHaveURL(/.*#about$/);
 });
