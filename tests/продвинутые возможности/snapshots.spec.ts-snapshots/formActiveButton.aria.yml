@@ -1,0 +1,9 @@
+- region "Form section":
+  - heading "Form" [level=2]
+  - text: Email
+  - textbox "Email":
+    - /placeholder: test@mail.com
+  - checkbox "I agree" [checked]
+  - text: I agree
+  - button "Submit"
+  - text: "Status: Idle"
